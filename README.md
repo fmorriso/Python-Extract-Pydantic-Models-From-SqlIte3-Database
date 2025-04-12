@@ -17,13 +17,13 @@ Example of using Pymongo to access MongoDB Atlas databases and collections using
 | Tool          |  Version |
 |:--------------|---------:|
 | Python        |   3.13.2 |
-| Pydantic      |   2.10.6 |
-| Pymongo       |   4.11.1 |
+| Pydantic      |   2.11.3 |
+| Pymongo       |   4.12.0 |
 | Motor         |    3.7.0 |
 | Loguru        |    0.7.3 |
 | python-dotenv |    1.1.0 |
-| VSCode        |   1.97.2 |
-| PyCharm       | 2024.3.3 |
+| VSCode        |   1.99.0 |
+| PyCharm       | 2024.3.5 |
 
 ## Change History
 
