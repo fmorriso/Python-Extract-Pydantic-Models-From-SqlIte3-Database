@@ -11,6 +11,7 @@ Example of using Pymongo to access MongoDB Atlas databases and collections using
 ## References
 
 * [Pydantic Fields](https://docs.pydantic.dev/2.10/usage/fields)
+* [SQLModel](https://sqlmodel.tiangolo.com/)
 
 ## Tools Used
 

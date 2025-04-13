@@ -1,0 +1,48 @@
+class Regions(BaseModel):
+    region_id: int
+    region_name: str
+
+class Countries(BaseModel):
+    country_id: Any
+    country_name: str
+    region_id: int
+
+class Locations(BaseModel):
+    location_id: int
+    street_address: str
+    postal_code: str
+    city: str
+    state_province: str
+    country_id: Any
+
+class Departments(BaseModel):
+    department_id: int
+    department_name: str
+    manager_id: int
+    location_id: int
+
+class Jobs(BaseModel):
+    job_id: int
+    job_title: str
+    min_salary: int
+    max_salary: int
+
+class Employees(BaseModel):
+    employee_id: int
+    first_name: str
+    last_name: str
+    email: str
+    phone_number: str
+    hire_date: str
+    job_id: int
+    salary: float
+    commission_pct: float
+    manager_id: int
+    department_id: int
+
+class Dependents(BaseModel):
+    dependent_id: int
+    first_name: str
+    last_name: str
+    relationship: str
+    employee_id: int
