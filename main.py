@@ -133,12 +133,15 @@ def sqlite_to_pydantic(db_path: str):
             columns = cursor.fetchall()
             for col in columns:
                 name, type_ = col[1], col[2]
+                py_type = None
                 if 'CHAR' in type_:
                     left_paren_idx = type_.index('(')
                     if left_paren_idx != -1:
-                        type_ = type_[:left_paren_idx]
-
-                py_type = sqlite_type_to_python(type_)
+                        right_paren_idx = type_.index(')')
+                        lth = type_[left_paren_idx + 1:right_paren_idx]
+                        py_type = f'constr(min_length={lth}, max_length={lth})'# type_[:left_paren_idx]
+                else:
+                    py_type = sqlite_type_to_python(type_)
                 print(f"    {name}: {py_type}")
 
 
@@ -204,8 +207,8 @@ def main():
     logger.debug(msg)
     logger.info(msg)
 
-    #sqlite_to_pydantic(db_path)
-    display_all_countries(db_path)
+    sqlite_to_pydantic(db_path)
+    #display_all_countries(db_path)
 
 
 """    
