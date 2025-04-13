@@ -119,20 +119,20 @@ def sqlite_to_pydantic(db_path: str):
     # print("from pydantic import BaseModel\nfrom typing import Any\n")
     # sqlite_to_pydantic("your_database.db")
 
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    with sqlite3.connect(db_path) as conn:
+        cursor = conn.cursor()
 
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    tables = cursor.fetchall()
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        tables = cursor.fetchall()
 
-    for (table_name,) in tables:
-        print(f"\nclass {table_name.capitalize()}(BaseModel):")
-        cursor.execute(f"PRAGMA table_info({table_name})")
-        columns = cursor.fetchall()
-        for col in columns:
-            name, type_ = col[1], col[2]
-            py_type = sqlite_type_to_python(type_)
-            print(f"    {name}: {py_type}")
+        for (table_name,) in tables:
+            print(f"\nclass {table_name.capitalize()}(BaseModel):")
+            cursor.execute(f"PRAGMA table_info({table_name})")
+            columns = cursor.fetchall()
+            for col in columns:
+                name, type_ = col[1], col[2]
+                py_type = sqlite_type_to_python(type_)
+                print(f"    {name}: {py_type}")
 
 
 def sqlite_type_to_python(sqlite_type: str) -> str:
@@ -147,28 +147,29 @@ def sqlite_type_to_python(sqlite_type: str) -> str:
 
 
 def display_all_countries(db_path):
-    conn = sqlite3.connect(db_path)
 
-    # Make rows accessible by column name
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
+    with sqlite3.connect(db_path) as conn:
 
-    # Execute query
-    cursor.execute("SELECT * FROM countries")
-    rows = cursor.fetchall()
+        # Make rows accessible by column name
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
 
-    # Iterate and create Pydantic models
-    for row in rows:
-        # Convert sqlite3.Row to dict
-        country_data = dict(row)
+        # Execute query
+        cursor.execute("SELECT * FROM countries")
+        rows = cursor.fetchall()
 
-        # Load into Pydantic model
-        country = Countries(**country_data)
+        # Iterate and create Pydantic models
+        for row in rows:
+            # Convert sqlite3.Row to dict
+            country_data = dict(row)
 
-        print(country)
+            # Load into Pydantic model
+            country = Countries(**country_data)
 
-    # Close the connection
-    conn.close()
+            msg = str(country)
+            logger.debug(msg)
+            logger.info(msg)
+
 
 def main():
     start_logging()
