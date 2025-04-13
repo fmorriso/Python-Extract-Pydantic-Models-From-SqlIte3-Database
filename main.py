@@ -133,6 +133,11 @@ def sqlite_to_pydantic(db_path: str):
             columns = cursor.fetchall()
             for col in columns:
                 name, type_ = col[1], col[2]
+                if 'CHAR' in type_:
+                    left_paren_idx = type_.index('(')
+                    if left_paren_idx != -1:
+                        type_ = type_[:left_paren_idx]
+
                 py_type = sqlite_type_to_python(type_)
                 print(f"    {name}: {py_type}")
 
@@ -144,6 +149,7 @@ def sqlite_type_to_python(sqlite_type: str) -> str:
         "TEXT": "str",
         "BLOB": "bytes",
         "NUMERIC": "float",
+        "CHAR": "str"
     }
     return mapping.get(sqlite_type.upper(), "Any")
 
@@ -198,7 +204,7 @@ def main():
     logger.debug(msg)
     logger.info(msg)
 
-    #ONE TIME: sqlite_to_pydantic(db_path)
+    #sqlite_to_pydantic(db_path)
     display_all_countries(db_path)
 
 
