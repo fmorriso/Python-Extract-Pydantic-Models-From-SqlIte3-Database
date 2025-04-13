@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+import loguru
+import pydantic
 #
 #
 #
@@ -175,6 +177,14 @@ def main():
     start_logging()
 
     msg = f'Python version: {get_python_version()}'
+    logger.debug(msg)
+    logger.info(msg)
+
+    msg = f'Pydantic version: {pydantic.__version__}'
+    logger.debug(msg)
+    logger.info(msg)
+
+    msg = f'Loguru version: {loguru.__version__}'
     logger.debug(msg)
     logger.info(msg)
 
