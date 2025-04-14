@@ -201,7 +201,7 @@ def get_region_by_id(id: int) -> Regions:
         return region
 
 
-def display_all_countries(db_path):
+def display_all_countries(db_path, expand_region=False):
 
     with sqlite3.connect(db_path) as conn:
 
@@ -225,29 +225,30 @@ def display_all_countries(db_path):
             logger.debug(msg)
             logger.info(msg)
 
-            # query corresponding Location by foreign key
-            foreign_key = country_data["region_id"]
-            region: Regions = get_region_by_id(int(foreign_key))
-            msg = str(region)
-            logger.debug(msg)
-            logger.info(msg)
+            if expand_region:
+                # query corresponding Region by foreign key
+                foreign_key = country_data["region_id"]
+                region: Regions = get_region_by_id(int(foreign_key))
+                msg = f'\t{str(region)}'
+                logger.debug(msg)
+                logger.info(msg)
 
 
 def get_db_path() -> str:
     db_file_name = ProgramSettings.get_setting('SQLITE_DATABASE_FILE_NAME')
-    msg = f'Database file: {db_file_name}'
-    logger.debug(msg)
-    logger.info(msg)
+    # msg = f'Database file: {db_file_name}'
+    # logger.debug(msg)
+    # logger.info(msg)
+
+    # db_path = find_file(db_file_name, '.')
+    # msg = f'Database path: {db_path}'
+    # logger.debug(msg)
+    # logger.info(msg)
 
     db_path = find_file(db_file_name, '.')
-    msg = f'Database path: {db_path}'
-    logger.debug(msg)
-    logger.info(msg)
-
-    db_path = find_file(db_file_name, '.')
-    msg = f'Database path: {db_path}'
-    logger.debug(msg)
-    logger.info(msg)
+    # msg = f'Database path: {db_path}'
+    # logger.debug(msg)
+    # logger.info(msg)
 
     return db_path
 
@@ -279,7 +280,7 @@ def main():
     db_path = get_db_path()
 
     # sqlite_to_pydantic(db_path)
-    display_all_countries(db_path)
+    display_all_countries(db_path, expand_region = True)
 
 
 """    
