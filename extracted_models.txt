@@ -3,7 +3,7 @@ class Regions(BaseModel):
     region_name: str
 
 class Countries(BaseModel):
-    country_id: Any
+    country_id: constr(min_length=2, max_length=2)
     country_name: str
     region_id: int
 
@@ -13,7 +13,8 @@ class Locations(BaseModel):
     postal_code: str
     city: str
     state_province: str
-    country_id: Any
+    country_id: constr(min_length=2, max_length=2)
+    country: Optional[Countries]
 
 class Departments(BaseModel):
     department_id: int

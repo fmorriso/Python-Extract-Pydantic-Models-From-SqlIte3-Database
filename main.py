@@ -12,6 +12,8 @@ from loguru import logger
 from pydantic import BaseModel
 
 from models.countries import Countries
+from models.locations import Locations
+from models.regions import Regions
 #
 #
 # from customer_model import Customer
@@ -157,6 +159,48 @@ def sqlite_type_to_python(sqlite_type: str) -> str:
     return mapping.get(sqlite_type.upper(), "Any")
 
 
+def get_location_by_id(id: int) -> Locations:
+    db_path = get_db_path()
+
+    with sqlite3.connect(db_path) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'SELECT * WHERE location_id = {id};')
+        location_row = cursor.fetchone()
+        (
+            location_id, street_address, postal_code, city, state_province, location_country_id
+        ) = location_row
+
+
+        location = Locations(
+            location_id = location_id,
+            street_address = street_address,
+            postal_code = postal_code,
+            city = city,
+            state_province = state_province,
+            country_id = location_country_id
+        )
+    return location
+
+
+def get_region_by_id(id: int) -> Regions:
+    db_path = get_db_path()
+
+    with sqlite3.connect(db_path) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f'SELECT * FROM regions WHERE region_id = {id};')
+        region_row = cursor.fetchone()
+        (
+            region_id, region_name
+        ) = region_row
+
+        region = Regions(
+            region_id = region_id,
+            region_name = region_name,
+        )
+
+        return region
+
+
 def display_all_countries(db_path):
 
     with sqlite3.connect(db_path) as conn:
@@ -181,6 +225,32 @@ def display_all_countries(db_path):
             logger.debug(msg)
             logger.info(msg)
 
+            # query corresponding Location by foreign key
+            foreign_key = country_data["region_id"]
+            region: Regions = get_region_by_id(int(foreign_key))
+            msg = str(region)
+            logger.debug(msg)
+            logger.info(msg)
+
+
+def get_db_path() -> str:
+    db_file_name = ProgramSettings.get_setting('SQLITE_DATABASE_FILE_NAME')
+    msg = f'Database file: {db_file_name}'
+    logger.debug(msg)
+    logger.info(msg)
+
+    db_path = find_file(db_file_name, '.')
+    msg = f'Database path: {db_path}'
+    logger.debug(msg)
+    logger.info(msg)
+
+    db_path = find_file(db_file_name, '.')
+    msg = f'Database path: {db_path}'
+    logger.debug(msg)
+    logger.info(msg)
+
+    return db_path
+
 
 def main():
     start_logging()
@@ -197,18 +267,19 @@ def main():
     logger.debug(msg)
     logger.info(msg)
 
-    db_file_name = ProgramSettings.get_setting('SQLITE_DATABASE_FILE_NAME')
-    msg = f'Database file: {db_file_name}'
-    logger.debug(msg)
-    logger.info(msg)
+    # db_file_name = ProgramSettings.get_setting('SQLITE_DATABASE_FILE_NAME')
+    # msg = f'Database file: {db_file_name}'
+    # logger.debug(msg)
+    # logger.info(msg)
+    #
+    # db_path = find_file(db_file_name, '.')
+    # msg = f'Database path: {db_path}'
+    # logger.debug(msg)
+    # logger.info(msg)
+    db_path = get_db_path()
 
-    db_path = find_file(db_file_name, '.')
-    msg = f'Database path: {db_path}'
-    logger.debug(msg)
-    logger.info(msg)
-
-    sqlite_to_pydantic(db_path)
-    #display_all_countries(db_path)
+    # sqlite_to_pydantic(db_path)
+    display_all_countries(db_path)
 
 
 """    
