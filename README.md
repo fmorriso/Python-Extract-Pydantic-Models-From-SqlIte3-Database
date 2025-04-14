@@ -41,6 +41,7 @@ Example of using Pymongo to access MongoDB Atlas databases and collections using
 | 2025-02-21 | Stop using PyODMongo and use Pydantic instead                                      | 
 | 2025-02-22 | rename remote repo and switch from GitLab to GitHub                                |
 | 2025-04-12 | document python-dotenv requirement                                                 |
+| 2025-05-14 | verify code runs with python 3.13.3                                                |
 
 ## Developer Notes
 
