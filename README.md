@@ -17,7 +17,7 @@ Example of using Pymongo to access MongoDB Atlas databases and collections using
 
 | Tool          |  Version |
 |:--------------|---------:|
-| Python        |   3.13.2 |
+| Python        |   3.13.3 |
 | Pydantic      |   2.11.3 |
 | Pymongo       |   4.12.0 |
 | Motor         |    3.7.0 |
