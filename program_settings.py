@@ -1,11 +1,14 @@
 import os
+from dataclasses import dataclass
 from typing import ClassVar
 
 from dotenv import load_dotenv, set_key
+from pathlib import Path
 
 
+@dataclass(frozen = True)
 class ProgramSettings:
-    ENV_PATH: ClassVar[str] = '.env'
+    ENV_PATH: ClassVar[os.PathLike[str]] =  Path('.env')
 
 
     @staticmethod
