@@ -1,16 +1,13 @@
 import sqlite3
 import sys
+from importlib.metadata import version
 from pathlib import Path
 from typing import Optional
 
-import loguru
 import pydantic
-#
-#
-#
-from loguru import logger
 from pydantic import BaseModel
 
+from logging_utility import LoggingUtility
 from models.countries import Countries
 from models.locations import Locations
 from models.regions import Regions
@@ -18,6 +15,8 @@ from models.regions import Regions
 #
 # from customer_model import Customer
 from program_settings import ProgramSettings
+
+logger = LoggingUtility.start_logging()
 
 
 def get_all_tables(db_path: str):
@@ -105,12 +104,8 @@ def get_python_version() -> str:
     return f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
 
 
-def start_logging():
-    log_format: str = '{time} - {name} - {level} - {function} - {message}'
-    logger.remove()
-    logger.add('formatted_log.txt', format = log_format, rotation = '10 MB', retention = '5 days')
-    # Add a handler that logs only DEBUG messages to stdout
-    logger.add(sys.stdout, level = "DEBUG", filter = lambda record: record["level"].name == "DEBUG")
+def get_package_version(package_name: str) -> str:
+    return version(package_name)
 
 
 def find_file(filename: str, search_path: str = '.'):
@@ -141,7 +136,7 @@ def sqlite_to_pydantic(db_path: str):
                     if left_paren_idx != -1:
                         right_paren_idx = type_.index(')')
                         lth = type_[left_paren_idx + 1:right_paren_idx]
-                        py_type = f'constr(min_length={lth}, max_length={lth})'# type_[:left_paren_idx]
+                        py_type = f'constr(min_length={lth}, max_length={lth})'  # type_[:left_paren_idx]
                 else:
                     py_type = sqlite_type_to_python(type_)
                 print(f"    {name}: {py_type}")
@@ -169,7 +164,6 @@ def get_location_by_id(id: int) -> Locations:
         (
             location_id, street_address, postal_code, city, state_province, location_country_id
         ) = location_row
-
 
         location = Locations(
             location_id = location_id,
@@ -201,8 +195,7 @@ def get_region_by_id(id: int) -> Regions:
         return region
 
 
-def display_all_countries(db_path, expand_region=False):
-
+def display_all_countries(db_path, expand_region = False):
     with sqlite3.connect(db_path) as conn:
 
         # Make rows accessible by column name
@@ -222,6 +215,7 @@ def display_all_countries(db_path, expand_region=False):
             country = Countries(**country_data)
 
             msg = str(country)
+            #TODO: logger is None at this point, but should not be the case
             logger.debug(msg)
             logger.info(msg)
 
@@ -254,19 +248,29 @@ def get_db_path() -> str:
 
 
 def main():
-    start_logging()
+
 
     msg = f'Python version: {get_python_version()}'
     logger.debug(msg)
     logger.info(msg)
 
-    msg = f'Pydantic version: {pydantic.__version__}'
+    msg = f'Pydantic version: {get_package_version("Pydantic")}'
     logger.debug(msg)
     logger.info(msg)
 
-    msg = f'Loguru version: {loguru.__version__}'
+    msg = f'loguru version: {get_package_version("loguru")}'
     logger.debug(msg)
     logger.info(msg)
+
+    msg = f'pymongo version: {get_package_version("pymongo")}'
+    logger.debug(msg)
+    logger.info(msg)
+
+    msg = f'motor version: {get_package_version("motor")}'
+    logger.debug(msg)
+    logger.info(msg)
+
+    # , motor
 
     # db_file_name = ProgramSettings.get_setting('SQLITE_DATABASE_FILE_NAME')
     # msg = f'Database file: {db_file_name}'
