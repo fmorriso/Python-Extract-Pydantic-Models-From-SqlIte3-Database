@@ -23,8 +23,8 @@ Example of using Pymongo to access MongoDB Atlas databases and collections using
 | Motor         |    3.7.0 |
 | Loguru        |    0.7.3 |
 | python-dotenv |    1.1.0 |
-| VSCode        |   1.99.0 |
-| PyCharm       | 2025.1.0 |
+| VSCode        |  1.100.3 |
+| PyCharm       | 2025.1.1 |
 
 ## Change History
 
@@ -43,6 +43,7 @@ Example of using Pymongo to access MongoDB Atlas databases and collections using
 | 2025-04-12 | document python-dotenv requirement                                                 |
 | 2025-04-14 | verify code runs with python 3.13.3                                                |
 | 2025-04-18 | use updated ProgramSettings class                                                  |
+| 2025-06-09 | use updated LoggingUtility class                                                   |
 
 ## Developer Notes
 

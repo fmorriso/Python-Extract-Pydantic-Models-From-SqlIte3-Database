@@ -3,20 +3,16 @@ import sys
 from importlib.metadata import version
 from pathlib import Path
 from typing import Optional
-
-import pydantic
+#
 from pydantic import BaseModel
-
-from logging_utility import LoggingUtility
+from logging_utility import LoggingUtility as LU
+#
 from models.countries import Countries
 from models.locations import Locations
 from models.regions import Regions
 #
-#
 # from customer_model import Customer
 from program_settings import ProgramSettings
-
-logger = LoggingUtility.start_logging()
 
 
 def get_all_tables(db_path: str):
@@ -35,8 +31,7 @@ def get_all_tables(db_path: str):
 def get_table_schema(db_path: str, table_name: str):
     """Fetch the schema of a specific table."""
     msg = f'getting table schema for {table_name}'
-    logger.debug(msg)
-    logger.info(msg)
+    LU.log_info_and_debug(msg)
 
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -53,8 +48,7 @@ def get_table_schema(db_path: str, table_name: str):
 def generate_pydantic_model(table_name: str, schema):
     """Generate a Pydantic model based on the SQLite table schema."""
     msg = f'generating Pydantic model for {table_name} using schema {schema}'
-    logger.debug(msg)
-    logger.info(msg)
+    LU.log_info_and_debug(msg)
 
     class_attrs = {}
 
@@ -63,8 +57,8 @@ def generate_pydantic_model(table_name: str, schema):
         if col_name is None:
             continue
         msg = f'Examining column {col_name}'
-        logger.debug(msg)
-        logger.info(msg)
+        LU.debug(msg)
+        LU.info(msg)
 
         col_type = col[2].upper()
 
@@ -92,8 +86,7 @@ def generate_all_models(db_path: str):
 
     for table in tables:
         msg = f"Generating Pydantic models for {table}"
-        logger.debug(msg)
-        logger.info(msg)
+        LU.log_info_and_debug(msg)
         schema = get_table_schema(db_path, table)
         models[table] = generate_pydantic_model(table, schema)
 
@@ -216,71 +209,49 @@ def display_all_countries(db_path, expand_region = False):
 
             msg = str(country)
             #TODO: logger is None at this point, but should not be the case
-            logger.debug(msg)
-            logger.info(msg)
+            LU.debug(msg)
+            LU.info(msg)
 
             if expand_region:
                 # query corresponding Region by foreign key
                 foreign_key = country_data["region_id"]
                 region: Regions = get_region_by_id(int(foreign_key))
                 msg = f'\t{str(region)}'
-                logger.debug(msg)
-                logger.info(msg)
+                LU.debug(msg)
+                LU.info(msg)
 
 
 def get_db_path() -> str:
     db_file_name = ProgramSettings.get_setting('SQLITE_DATABASE_FILE_NAME')
     # msg = f'Database file: {db_file_name}'
-    # logger.debug(msg)
-    # logger.info(msg)
+    # LU.debug(msg)
+    # LU.info(msg)
 
     # db_path = find_file(db_file_name, '.')
     # msg = f'Database path: {db_path}'
-    # logger.debug(msg)
-    # logger.info(msg)
+    # LU.debug(msg)
+    # LU.info(msg)
 
     db_path = find_file(db_file_name, '.')
     # msg = f'Database path: {db_path}'
-    # logger.debug(msg)
-    # logger.info(msg)
+    # LU.debug(msg)
+    # LU.info(msg)
 
     return db_path
 
 
 def main():
-
-
-    msg = f'Python version: {get_python_version()}'
-    logger.debug(msg)
-    logger.info(msg)
-
-    msg = f'Pydantic version: {get_package_version("Pydantic")}'
-    logger.debug(msg)
-    logger.info(msg)
-
-    msg = f'loguru version: {get_package_version("loguru")}'
-    logger.debug(msg)
-    logger.info(msg)
-
-    msg = f'pymongo version: {get_package_version("pymongo")}'
-    logger.debug(msg)
-    logger.info(msg)
-
-    msg = f'motor version: {get_package_version("motor")}'
-    logger.debug(msg)
-    logger.info(msg)
-
     # , motor
 
     # db_file_name = ProgramSettings.get_setting('SQLITE_DATABASE_FILE_NAME')
     # msg = f'Database file: {db_file_name}'
-    # logger.debug(msg)
-    # logger.info(msg)
+    # LU.debug(msg)
+    # LU.info(msg)
     #
     # db_path = find_file(db_file_name, '.')
     # msg = f'Database path: {db_path}'
-    # logger.debug(msg)
-    # logger.info(msg)
+    # LU.debug(msg)
+    # LU.info(msg)
     db_path = get_db_path()
 
     # sqlite_to_pydantic(db_path)
@@ -297,4 +268,24 @@ def main():
 """
 
 if __name__ == '__main__':
+    LU.start_logging()
+
+    msg = f'Python version: {get_python_version()}'
+    LU.log_info_and_debug(msg)
+
+    msg = f'Pydantic version: {get_package_version("Pydantic")}'
+    LU.log_info_and_debug(msg)
+
+    msg = f'loguru version: {get_package_version("loguru")}'
+    LU.log_info_and_debug(msg)
+
+    msg = f'pymongo version: {get_package_version("pymongo")}'
+    LU.log_info_and_debug(msg)
+
+    msg = f'motor version: {get_package_version("motor")}'
+    LU.log_info_and_debug(msg)
+
+    msg = f'python-dotenv version: {get_package_version("python-dotenv")}'
+    LU.log_info_and_debug(msg)
+
     main()

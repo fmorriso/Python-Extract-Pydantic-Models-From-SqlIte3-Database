@@ -1,6 +1,5 @@
-python-dotenv~=1.1.0
-Pydantic~=2.11.3
-Pymongo~=4.12.0
-Motor~=3.7.0
 Loguru~=0.7.3
-
+Motor~=3.7.0
+Pydantic~=2.11.3
+Pymongo~=4.13.0
+python-dotenv~=1.1.0
